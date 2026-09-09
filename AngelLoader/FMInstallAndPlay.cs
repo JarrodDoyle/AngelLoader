@@ -409,6 +409,8 @@ internal static partial class FMInstallAndPlay
             !steamArgs.IsEmpty() ? steamArgs :
             "-fm";
 
+        // NewDark 1.28 made (undocumented) changes to how launch arguments are specified
+        var nd128 = ConfigStoredGameIsNewDark128OrAbove(gameIndex);
         if (GameIsDark(fm.Game))
         {
             MissFlagError missFlagError = GenerateMissFlagFileIfRequired(fm, errorOnCantPlay: true);
@@ -417,7 +419,7 @@ internal static partial class FMInstallAndPlay
 #if !ReleaseBeta && !ReleasePublic
             if (Config.ForceWindowed)
             {
-                args += " force_windowed=1";
+                args += nd128 ? " -force_windowed=1" : " force_windowed=1";
             }
 #endif
 
@@ -427,7 +429,7 @@ internal static partial class FMInstallAndPlay
 
             if (fmIsOldDark && FMRequiresPaletteFix(fm, checkForOldDark: false))
             {
-                args += " legacy_32bit_txtpal=1";
+                args += nd128 ? " -legacy_32bit_txtpal=1" : " legacy_32bit_txtpal=1";
             }
 
             /*
@@ -444,33 +446,33 @@ internal static partial class FMInstallAndPlay
             */
             if (fm.NewMantle == true)
             {
-                args += " new_mantle=1";
+                args += nd128 ? " -new_mantle=1" : " new_mantle=1";
             }
             else if (fm.NewMantle == false)
             {
-                args += " new_mantle=0";
+                args += nd128 ? " -new_mantle=0" : " new_mantle=0";
             }
             else if (fmIsOldDark && Config.UseOldMantlingForOldDarkFMs)
             {
-                args += " new_mantle=0";
+                args += nd128 ? " -new_mantle=0" : " new_mantle=0";
             }
 
             if (fm.PostProc == true)
             {
-                args += " postprocess=1";
+                args += nd128 ? " -postprocess=1" : " postprocess=1";
             }
             else if (fm.PostProc == false)
             {
-                args += " postprocess=0";
+                args += nd128 ? " -postprocess=0" : " postprocess=0";
             }
 
             if (fm.NDSubs == true)
             {
-                args += " enable_subtitles=1";
+                args += nd128 ? " -enable_subtitles=1" : " enable_subtitles=1";
             }
             else if (fm.NDSubs == false)
             {
-                args += " enable_subtitles=0";
+                args += nd128 ? " -enable_subtitles=0" : " enable_subtitles=0";
             }
         }
 
