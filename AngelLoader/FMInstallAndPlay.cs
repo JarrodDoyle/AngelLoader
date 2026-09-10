@@ -301,8 +301,13 @@ internal static partial class FMInstallAndPlay
 #endif
             if (!SetUsAsSelector(gameIndex, gamePath, PlaySource.OriginalGame)) return false;
 
+            // NewDark 1.28 made (undocumented) changes to how launch arguments are specified
+            var nd128 = ConfigStoredGameIsNewDark128OrAbove(gameIndex);
+
 #if !ReleaseBeta && !ReleasePublic
-            string args = Config.ForceWindowed ? "force_windowed=1" : "";
+            string args = Config.ForceWindowed
+                ? nd128 ? "-force_windowed=1"  : "force_windowed=1"
+                : "";
 #else
             string args = "";
 #endif
@@ -315,10 +320,10 @@ internal static partial class FMInstallAndPlay
                 switch (Config.GetNewMantling(gameIndex))
                 {
                     case true:
-                        args += " new_mantle=1";
+                        args += nd128 ? " -new_mantle=1" : " new_mantle=1";
                         break;
                     case false:
-                        args += " new_mantle=0";
+                        args += nd128 ? " -new_mantle=0" : " new_mantle=0";
                         break;
                 }
             }
